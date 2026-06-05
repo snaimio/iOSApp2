@@ -1,22 +1,12 @@
 import SwiftUI
 
 struct ScavengerListView: View {
-    
-    // Access the shared data store
-    
     @EnvironmentObject var store: ScavengerStore
-    
-    // Track which item was tapped
-    
     @State private var selectedItem: ScavengerItem?
-    
-    // Control alert popups
-    
     @State private var showSubmitAlert = false
     @State private var showResetAlert = false
     
-    // Grid layout with 2 columns
-    
+    // Grid with 2 columns
     let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -25,15 +15,13 @@ struct ScavengerListView: View {
     var body: some View {
         VStack(spacing: 0) {
             
-            // Header section with progress and reward
-            
+            // Progress header
             VStack(spacing: 6) {
                 Text("Found: \(store.foundCount) / 10")
                     .font(.headline)
                     .fontWeight(.bold)
                 
                 // Progress bar
-                
                 ProgressView(value: Double(store.foundCount), total: 10)
                     .tint(.mint)
                     .frame(height: 6)
@@ -41,7 +29,6 @@ struct ScavengerListView: View {
                     .padding(.horizontal)
                 
                 // Reward message
-                
                 Text(store.rewardMessage)
                     .font(.subheadline)
                     .foregroundColor(store.foundCount >= 5 ? .mint : .gray)
@@ -52,15 +39,10 @@ struct ScavengerListView: View {
             .padding(.horizontal)
             .background(Color(.systemGray6))
             
-            // Action buttons row
-            
+            // Buttons row
             HStack(spacing: 12) {
-                
-                // Submit results button - only enabled after 5 items
-                
-                Button(action: {
-                    showSubmitAlert = true
-                }) {
+                // Submit button
+                Button(action: { showSubmitAlert = true }) {
                     HStack {
                         Image(systemName: "paperplane.fill")
                         Text("Submit")
@@ -71,41 +53,50 @@ struct ScavengerListView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
-                    .padding(.horizontal, 8)
                     .background(store.foundCount >= 5 ? Color.blue : Color.gray)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    .font(.subheadline)
                 }
                 .disabled(store.foundCount < 5)
                 
-                // Reset game button
-                
-                Button(action: {
-                    showResetAlert = true
-                }) {
+                // Reset button
+                Button(action: { showResetAlert = true }) {
                     HStack {
                         Image(systemName: "arrow.clockwise")
                         Text("Reset")
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
-                    .padding(.horizontal, 8)
                     .background(Color.purple)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    .font(.subheadline)
                 }
             }
             .padding(.horizontal)
             .padding(.top, 8)
             
-            // Scrollable grid of items
+            // Alert for submit
+            .alert("Submit Results", isPresented: $showSubmitAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(store.rewardMessage)
+            }
             
+            // Alert for reset
+            .alert("Reset Game?", isPresented: $showResetAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Reset", role: .destructive) {
+                    resetGame()
+                }
+            } message: {
+                Text("All progress and photos will be lost.")
+            }
+            
+            // Grid of items
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(store.items) { item in
-                        CompactCardView(item: item)
+                        ItemCard(item: item)
                             .onTapGesture {
                                 selectedItem = item
                             }
@@ -121,23 +112,9 @@ struct ScavengerListView: View {
                 ScavengerDetailView(item: $store.items[index])
             }
         }
-        .alert("Submit Results", isPresented: $showSubmitAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(store.rewardMessage)
-        }
-        .alert("Reset Game?", isPresented: $showResetAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Reset", role: .destructive) {
-                resetGame()
-            }
-        } message: {
-            Text("All progress and photos will be lost.")
-        }
     }
     
-    // Function to reset all progress
-    
+    // Reset all progress
     func resetGame() {
         for i in 0..<store.items.count {
             store.items[i].isFound = false
@@ -147,8 +124,7 @@ struct ScavengerListView: View {
 }
 
 // Card view for each item in the grid
-
-struct CompactCardView: View {
+struct ItemCard: View {
     let item: ScavengerItem
     
     var body: some View {
@@ -158,25 +134,20 @@ struct CompactCardView: View {
                 .aspectRatio(0.9, contentMode: .fit)
                 .overlay(
                     VStack(spacing: 6) {
-                        
-                        // Status icon (circle or checkmark)
-                        
-                        Image(systemName: item.isFound ? "checkmark.circle" : "circle")
+                        // Status icon
+                        Image(systemName: item.isFound ? "checkmark.circle.fill" : "circle")
                             .font(.title3)
                             .foregroundColor(item.isFound ? .mint : .gray)
                         
                         // Item name
-                        
                         Text(item.name)
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.primary)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                             .padding(.horizontal, 4)
                         
-                        // Short clue
-                        
+                        // Clue
                         Text(item.clue)
                             .font(.caption2)
                             .foregroundColor(.secondary)
@@ -185,9 +156,8 @@ struct CompactCardView: View {
                             .padding(.horizontal, 4)
                         
                         // Camera icon if photo taken
-                        
                         if item.image != nil {
-                            Image(systemName: "camera")
+                            Image(systemName: "camera.fill")
                                 .font(.caption2)
                                 .foregroundColor(.blue)
                         }
