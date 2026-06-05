@@ -10,9 +10,22 @@
 		192CE66A2FD1B1AA005D4B91 /* ScavengerHunt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScavengerHunt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1906020F2FD2FEF50010FB68 /* Exceptions for "ScavengerHunt" folder in "ScavengerHunt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 192CE6692FD1B1AA005D4B91 /* ScavengerHunt */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		192CE66C2FD1B1AA005D4B91 /* ScavengerHunt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1906020F2FD2FEF50010FB68 /* Exceptions for "ScavengerHunt" folder in "ScavengerHunt" target */,
+			);
 			path = ScavengerHunt;
 			sourceTree = "<group>";
 		};
@@ -256,6 +269,8 @@
 				DEVELOPMENT_TEAM = BP49ZMU6R3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScavengerHunt/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs photo library access to select photos as proof.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +303,8 @@
 				DEVELOPMENT_TEAM = BP49ZMU6R3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScavengerHunt/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs photo library access to select photos as proof.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

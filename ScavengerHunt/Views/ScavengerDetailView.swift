@@ -1,17 +1,24 @@
 import SwiftUI
+import PhotosUI
 
 struct ScavengerDetailView: View {
+    
     @Binding var item: ScavengerItem
     @Environment(\.dismiss) var dismiss
+    
     @State private var showPhotoWarning = false
     @State private var hasPhoto = false
     @State private var hasMarkedFound = false
+    
+    // For PhotosPicker, holds selected photos
+    
+    @State private var selectedItem: PhotosPickerItem?
     
     // Fixed photo size
     
     let photoSize: CGFloat = 250
     
-    // Computed property - item is complete only if BOTH are true
+    // Computed property, item is complete only if BOTH are true
     
     var isComplete: Bool {
         return hasPhoto && hasMarkedFound
@@ -68,7 +75,7 @@ struct ScavengerDetailView: View {
                         }
                         .padding(.horizontal)
                         
-                        // Photo section, FIXED SIZE
+                        // Photo section, shows real photo if available
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("📸 PHOTO PROOF")
@@ -95,6 +102,9 @@ struct ScavengerDetailView: View {
                                             Text("No photo yet")
                                                 .font(.caption)
                                                 .foregroundColor(.gray)
+                                            Text("Tap 'Take Photo' to select a photo")
+                                                .font(.caption2)
+                                                .foregroundColor(.gray)
                                         }
                                     )
                             }
@@ -116,13 +126,9 @@ struct ScavengerDetailView: View {
                         
                         VStack(spacing: 12) {
                             
-                            // Take Photo button
+                            // Take Photo button using PhotosPicker
                             
-                            Button(action: {
-                                takePhoto()
-                                hasPhoto = true
-                                showPhotoWarning = false
-                            }) {
+                            PhotosPicker(selection: $selectedItem, matching: .images) {
                                 HStack {
                                     Image(systemName: hasPhoto ? "camera.fill" : "camera")
                                     Text(hasPhoto ? "✓ Photo Taken" : "Take Photo")
@@ -135,8 +141,25 @@ struct ScavengerDetailView: View {
                                 .cornerRadius(10)
                             }
                             .disabled(hasPhoto)
+                            .onChange(of: selectedItem) { _, newItem in
+                                
+                                // Loads the selected photo
+                                
+                                Task {
+                                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                                       let uiImage = UIImage(data: data) {
+                                        await MainActor.run {
+                                            item.image = uiImage
+                                            hasPhoto = true
+                                            showPhotoWarning = false
+                                            selectedItem = nil  // Resets after loading
+                                        }
+                                    }
+                                }
+                            }
                             
                             // Mark as Found button
+                            
                             Button(action: {
                                 hasMarkedFound = true
                                 showPhotoWarning = false
@@ -154,7 +177,8 @@ struct ScavengerDetailView: View {
                             }
                             .disabled(hasMarkedFound)
                             
-                            // Done button
+                            // Done button (requires BOTH)
+                            
                             Button(action: {
                                 if isComplete {
                                     item.isFound = true
@@ -187,10 +211,6 @@ struct ScavengerDetailView: View {
                 
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
-                        
-                        // Close button works anytime, doesn't require completion
-                        // But if complete, save progress
-                        
                         if isComplete {
                             item.isFound = true
                         }
@@ -203,64 +223,6 @@ struct ScavengerDetailView: View {
         .onAppear {
             hasPhoto = item.image != nil
             hasMarkedFound = item.isFound
-        }
-    }
-    
-    func takePhoto() {
-        
-        // REAL image from asset catalog
-        
-        let imageName: String
-        
-        switch item.name {
-        case "Coffee Shop":
-            imageName = "coffee"
-        case "Movie Theater":
-            imageName = "movie"
-        case "Book Store":
-            imageName = "book"
-        case "Restaurant":
-            imageName = "restaurant"
-        case "Library":
-            imageName = "library"
-        case "Gym":
-            imageName = "gym"
-        case "Park":
-            imageName = "park"
-        case "Bakery":
-            imageName = "bakery"
-        case "Mall":
-            imageName = "mall"
-        case "Ice Cream Shop":
-            imageName = "icecream"
-        default:
-            imageName = "placeholder"
-        }
-        
-        // Try to load from asset catalog, fallback to SF Symbol
-        
-        if let realImage = UIImage(named: imageName) {
-            let targetSize = CGSize(width: 300, height: 300)
-            let renderer = UIGraphicsImageRenderer(size: targetSize)
-            let resizedImage = renderer.image { _ in
-                realImage.draw(in: CGRect(origin: .zero, size: targetSize))
-            }
-            item.image = resizedImage
-        } else {
-            
-            // Fallback to SF Symbol
-            
-            let config = UIImage.SymbolConfiguration(pointSize: 100, weight: .regular)
-            let mockImage = UIImage(systemName: "camera.fill", withConfiguration: config)?
-                .withTintColor(.blue, renderingMode: .alwaysOriginal)
-            
-            let renderer = UIGraphicsImageRenderer(size: CGSize(width: 300, height: 300))
-            let resizedImage = renderer.image { context in
-                UIColor.systemGray6.setFill()
-                context.fill(CGRect(x: 0, y: 0, width: 300, height: 300))
-                mockImage?.draw(in: CGRect(x: 75, y: 75, width: 150, height: 150))
-            }
-            item.image = resizedImage
         }
     }
 }
