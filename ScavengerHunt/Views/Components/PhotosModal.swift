@@ -2,6 +2,7 @@ import SwiftUI
 import PhotosUI
 
 // Component for selecting photos from library
+
 struct PhotosModal: View {
     @Binding var selectedItem: PhotosPickerItem?
     @Binding var hasPhoto: Bool

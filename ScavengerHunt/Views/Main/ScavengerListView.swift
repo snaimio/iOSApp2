@@ -7,6 +7,7 @@ struct ScavengerListView: View {
     @State private var showResetAlert = false
     
     // Grid with 2 columns
+    
     let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -16,12 +17,14 @@ struct ScavengerListView: View {
         VStack(spacing: 0) {
             
             // Progress header
+            
             VStack(spacing: 6) {
                 Text("Found: \(store.foundCount) / 10")
                     .font(.headline)
                     .fontWeight(.bold)
                 
                 // Progress bar
+                
                 ProgressView(value: Double(store.foundCount), total: 10)
                     .tint(.mint)
                     .frame(height: 6)
@@ -29,6 +32,7 @@ struct ScavengerListView: View {
                     .padding(.horizontal)
                 
                 // Reward message
+                
                 Text(store.rewardMessage)
                     .font(.subheadline)
                     .foregroundColor(store.foundCount >= 5 ? .mint : .gray)
@@ -40,8 +44,11 @@ struct ScavengerListView: View {
             .background(Color(.systemGray6))
             
             // Buttons row
+            
             HStack(spacing: 12) {
+                
                 // Submit button
+                
                 Button(action: { showSubmitAlert = true }) {
                     HStack {
                         Image(systemName: "paperplane.fill")
@@ -60,6 +67,7 @@ struct ScavengerListView: View {
                 .disabled(store.foundCount < 5)
                 
                 // Reset button
+                
                 Button(action: { showResetAlert = true }) {
                     HStack {
                         Image(systemName: "arrow.clockwise")
@@ -76,6 +84,7 @@ struct ScavengerListView: View {
             .padding(.top, 8)
             
             // Alert for submit
+            
             .alert("Submit Results", isPresented: $showSubmitAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
@@ -83,6 +92,7 @@ struct ScavengerListView: View {
             }
             
             // Alert for reset
+            
             .alert("Reset Game?", isPresented: $showResetAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Reset", role: .destructive) {
@@ -93,6 +103,7 @@ struct ScavengerListView: View {
             }
             
             // Grid of items
+            
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(store.items) { item in
@@ -115,6 +126,7 @@ struct ScavengerListView: View {
     }
     
     // Reset all progress
+    
     func resetGame() {
         for i in 0..<store.items.count {
             store.items[i].isFound = false
@@ -124,6 +136,7 @@ struct ScavengerListView: View {
 }
 
 // Card view for each item in the grid
+
 struct ItemCard: View {
     let item: ScavengerItem
     
@@ -134,12 +147,15 @@ struct ItemCard: View {
                 .aspectRatio(0.9, contentMode: .fit)
                 .overlay(
                     VStack(spacing: 6) {
+                        
                         // Status icon
+                        
                         Image(systemName: item.isFound ? "checkmark.circle.fill" : "circle")
                             .font(.title3)
                             .foregroundColor(item.isFound ? .mint : .gray)
                         
                         // Item name
+                        
                         Text(item.name)
                             .font(.subheadline)
                             .fontWeight(.semibold)
@@ -148,6 +164,7 @@ struct ItemCard: View {
                             .padding(.horizontal, 4)
                         
                         // Clue
+                        
                         Text(item.clue)
                             .font(.caption2)
                             .foregroundColor(.secondary)
@@ -156,6 +173,7 @@ struct ItemCard: View {
                             .padding(.horizontal, 4)
                         
                         // Camera icon if photo taken
+                        
                         if item.image != nil {
                             Image(systemName: "camera.fill")
                                 .font(.caption2)

@@ -8,22 +8,26 @@ struct WelcomeView: View {
             Spacer()
             
             // App icon
+            
             Image(systemName: "binoculars.fill")
                 .font(.system(size: 80))
                 .foregroundColor(.blue)
             
             // App title
+            
             Text("Scavenger Hunt")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
             // Subtitle
+            
             Text("Find 10 hidden items in your city!")
                 .font(.title3)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
             
             // Instructions
+            
             VStack(alignment: .leading, spacing: 15) {
                 HStack {
                     Image(systemName: "camera.fill")
@@ -49,6 +53,7 @@ struct WelcomeView: View {
             Spacer()
             
             // Start button - navigates to game screen
+            
             NavigationLink(destination: ScavengerListView()
                 .environmentObject(store)) {
                 Text("Start Hunt")

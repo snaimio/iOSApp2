@@ -2,13 +2,13 @@ import SwiftUI
 
 @main
 struct ScavengerApp: App {
-    // Creates the data store that lives for the entire app
-    @StateObject var store = ScavengerStore()
+    
+    @StateObject var store = ScavengerStore()   // Creates the data store that lives for the entire app
     
     var body: some Scene {
         WindowGroup {
-            // NavigationStack allows moving between screens
-            NavigationStack {
+            
+            NavigationStack {   // NavigationStack allows moving between screens
                 WelcomeView()
                     .environmentObject(store)
             }

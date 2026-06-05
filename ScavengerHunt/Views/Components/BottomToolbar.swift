@@ -1,6 +1,7 @@
 import SwiftUI
 
 // Component for action buttons at the bottom
+
 struct BottomToolbar: View {
     @Binding var hasMarkedFound: Bool
     @Binding var isComplete: Bool
@@ -12,6 +13,7 @@ struct BottomToolbar: View {
         VStack(spacing: 12) {
             
             // Mark as Found button
+            
             Button(action: onMarkFound) {
                 HStack {
                     Image(systemName: hasMarkedFound ? "checkmark.seal.fill" : "checkmark.seal")
@@ -27,6 +29,7 @@ struct BottomToolbar: View {
             .disabled(hasMarkedFound)
             
             // Done button
+            
             Button(action: onDone) {
                 Text("Done")
                     .fontWeight(.semibold)

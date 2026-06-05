@@ -4,24 +4,9 @@ import SwiftUI
 
 struct ScavengerItem: Identifiable {
     
-    // Unique identifier, required by Identifiable protocol
-    
-    let id = UUID()
-    
-    // Business name (e.g., "Coffee Shop", "Movie Theater")
-    
-    var name: String
-    
-    // Clue to help user find the item
-    
-    var clue: String
-    
-    // Tracks whether user has found this item
-    
-    var isFound: Bool = false
-    
-    // UIImage works with camera and photo library
-    // Also used for displaying stickers/business logos
-    
-    var image: UIImage? = nil
+    let id = UUID()             // Unique identifier, required by Identifiable protocol
+    var name: String            // Business name (e.g., "Coffee Shop", "Movie Theater")
+    var clue: String            // Clue to help user find the item
+    var isFound: Bool = false   // Tracks whether user has found this item
+    var image: UIImage? = nil   // UIImage works with camera, photo library, displaying stickers/business logos
 }

@@ -1,8 +1,3 @@
-//
-//  ScavengerDetailView.swift
-//  ScavengerHunt
-//
-
 import SwiftUI
 import PhotosUI
 
@@ -23,12 +18,14 @@ struct ScavengerDetailView: View {
                     VStack(spacing: 20) {
                         
                         // Item name
+                        
                         Text(item.name)
                             .font(.system(size: 28, weight: .bold))
                             .multilineTextAlignment(.center)
                             .padding(.top, 10)
                         
                         // Status text - reads directly from item
+                        
                         if item.isFound && item.image != nil {
                             Text("🎉 You found it! You may keep exploring!")
                                 .font(.subheadline)
@@ -51,6 +48,7 @@ struct ScavengerDetailView: View {
                         }
                         
                         // Clue section
+                        
                         VStack(alignment: .leading, spacing: 6) {
                             Text("🔍 CLUE")
                                 .font(.caption)
@@ -65,6 +63,7 @@ struct ScavengerDetailView: View {
                         .padding(.horizontal)
                         
                         // Photo section
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             Text("📸 PHOTO PROOF")
                                 .font(.caption)
@@ -115,6 +114,7 @@ struct ScavengerDetailView: View {
                         .padding(.horizontal)
                         
                         // Take Photo button
+                        
                         PhotosPicker(selection: $selectedItem, matching: .images) {
                             HStack {
                                 Image(systemName: item.image != nil ? "camera.fill" : "camera")
@@ -140,7 +140,8 @@ struct ScavengerDetailView: View {
                             }
                         }
                         
-                        // Mark as Found button - saves immediately to item
+                        // Mark as Found button
+                        
                         Button(action: {
                             item.isFound = true
                         }) {
@@ -157,8 +158,9 @@ struct ScavengerDetailView: View {
                         }
                         .disabled(item.isFound)
                         
-                        // Done button - ONLY works if BOTH are done
+                        // Done button, ONLY works if BOTH are done
                         // But Close button can be used anytime
+                        
                         Button(action: {
                             if item.image != nil && item.isFound {
                                 dismiss()
@@ -180,8 +182,10 @@ struct ScavengerDetailView: View {
             .navigationTitle((item.image != nil && item.isFound) ? "✓ Complete!" : item.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                
                 // Close button - always works, saves nothing automatically
                 // But item.isFound and item.image are already saved when user taps buttons
+                
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
                         dismiss()

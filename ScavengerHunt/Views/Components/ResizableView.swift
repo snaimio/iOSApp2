@@ -1,6 +1,7 @@
 import SwiftUI
 
 // View modifier for pinch and rotate gestures
+
 struct ResizableView: ViewModifier {
     @Binding var scale: CGFloat
     @Binding var rotation: Angle
@@ -41,6 +42,7 @@ struct ResizableView: ViewModifier {
 }
 
 // Extension to make it easy to use
+
 extension View {
     func resizableView(scale: Binding<CGFloat>, rotation: Binding<Angle>) -> some View {
         modifier(ResizableView(scale: scale, rotation: rotation))
