@@ -4,7 +4,12 @@
 <dict>
 	<key>NSCAmeraUsageDescription</key>
 	<string>This app needs camera access to take photos of scavenger hunt items.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photo library access to select photos as proof.</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UI Image Name</key>
+		<string>LaunchImage</string>
+	</dict>
+	<key>UiColorName</key>
+	<string>LaunchColor</string>
 </dict>
 </plist>
