@@ -25,13 +25,6 @@ A scavenger hunt app that helps users find 10 hidden items at local businesses. 
 - Xcode 16.2
 - iOS 18
 
-### Concepts Applied
-
-- Chapter 13: Navigation (fullScreenCover, modal sheets, toolbar)
-- Chapter 14: Gestures (drag, pinch, rotate, SimultaneousGesture)
-- Chapter 15: Data Model (ObservableObject, @Published, @Binding)
-- Chapter 16: Assets (AppIcon, LaunchColor, image sets)
-
 ### How to Run
 
 1. Clone the repository
