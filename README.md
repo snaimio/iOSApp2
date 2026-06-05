@@ -1,7 +1,5 @@
 # iOSApp2 - Scavenger Hunt App
 
-## Assignment 3 - iOS App Development
-
 ### Description
 
 A scavenger hunt app that helps users find 10 hidden items at local businesses. Users take photos as proof, track their progress, and earn discounts and prizes.
