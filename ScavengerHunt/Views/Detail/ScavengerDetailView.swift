@@ -5,9 +5,16 @@ struct ScavengerDetailView: View {
     @Binding var item: ScavengerItem
     @Environment(\.dismiss) var dismiss
     
+    // Stores the photo selected from PhotosPicker
+    
     @State private var selectedItem: PhotosPickerItem?
+    
+    // For pinch and rotate gestures on photo
+    
     @State private var photoScale: CGFloat = 1.0
     @State private var photoRotation: Angle = .zero
+    
+    // Fixed size for all photos to keep them consistent
     
     let photoSize: CGFloat = 250
     
@@ -24,7 +31,7 @@ struct ScavengerDetailView: View {
                             .multilineTextAlignment(.center)
                             .padding(.top, 10)
                         
-                        // Status text - reads directly from item
+                        // Status text - shows different messages based on what user has done
                         
                         if item.isFound && item.image != nil {
                             Text("🎉 You found it! You may keep exploring!")
@@ -69,7 +76,12 @@ struct ScavengerDetailView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             
+                            // Show photo if user has taken one, otherwise show placeholder
+                            
                             if let image = item.image {
+                                
+                                // User's taken photo with pinch and rotate gestures
+                                
                                 Image(uiImage: image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -95,6 +107,9 @@ struct ScavengerDetailView: View {
                                         }
                                     }
                             } else {
+                                
+                                // Empty placeholder when no photo taken
+                                
                                 RoundedRectangle(cornerRadius: 12)
                                     .fill(Color(.systemGray5))
                                     .frame(width: photoSize, height: photoSize)
@@ -107,27 +122,29 @@ struct ScavengerDetailView: View {
                                             Text("No photo yet")
                                                 .font(.caption)
                                                 .foregroundColor(.gray)
+                                            Text("Tap 'Take Photo' to select a photo")
+                                                .font(.caption2)
+                                                .foregroundColor(.gray)
                                         }
                                     )
                             }
                         }
                         .padding(.horizontal)
                         
-                        // Take Photo button
+                        // Take Photo button using PhotosPicker - allows retaking photos
                         
                         PhotosPicker(selection: $selectedItem, matching: .images) {
                             HStack {
                                 Image(systemName: item.image != nil ? "camera.fill" : "camera")
-                                Text(item.image != nil ? "✓ Photo Taken" : "Take Photo")
+                                Text(item.image != nil ? "Retake Photo" : "Take Photo")
                                     .fontWeight(.medium)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(item.image != nil ? Color.mint : Color.blue)
+                            .background(item.image != nil ? Color.orange : Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                         }
-                        .disabled(item.image != nil)
                         .onChange(of: selectedItem) { _, newItem in
                             Task {
                                 if let data = try? await newItem?.loadTransferable(type: Data.self),
@@ -158,8 +175,7 @@ struct ScavengerDetailView: View {
                         }
                         .disabled(item.isFound)
                         
-                        // Done button, ONLY works if BOTH are done
-                        // But Close button can be used anytime
+                        // Done button - only works if BOTH photo taken AND marked as found
                         
                         Button(action: {
                             if item.image != nil && item.isFound {
@@ -183,8 +199,7 @@ struct ScavengerDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 
-                // Close button - always works, saves nothing automatically
-                // But item.isFound and item.image are already saved when user taps buttons
+                // Close button - always works
                 
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
@@ -194,6 +209,10 @@ struct ScavengerDetailView: View {
                 }
             }
         }
+        .onAppear {
+            print("Item name: \(item.name)")
+            print("Item image is nil? \(item.image == nil)")
+        }
     }
 }
 
@@ -201,3 +220,4 @@ struct ScavengerDetailView: View {
     @Previewable @State var testItem = ScavengerStore().items[0]
     ScavengerDetailView(item: $testItem)
 }
+

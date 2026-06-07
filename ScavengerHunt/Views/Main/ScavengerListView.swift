@@ -1,3 +1,8 @@
+//
+//  ScavengerListView.swift
+//  ScavengerHunt
+//
+
 import SwiftUI
 
 struct ScavengerListView: View {
@@ -5,8 +10,6 @@ struct ScavengerListView: View {
     @State private var selectedItem: ScavengerItem?
     @State private var showSubmitAlert = false
     @State private var showResetAlert = false
-    
-    // Grid with 2 columns
     
     let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -16,22 +19,16 @@ struct ScavengerListView: View {
     var body: some View {
         VStack(spacing: 0) {
             
-            // Progress header
-            
             VStack(spacing: 6) {
                 Text("Found: \(store.foundCount) / 10")
                     .font(.headline)
                     .fontWeight(.bold)
-                
-                // Progress bar
                 
                 ProgressView(value: Double(store.foundCount), total: 10)
                     .tint(.mint)
                     .frame(height: 6)
                     .scaleEffect(x: 1, y: 1.5, anchor: .center)
                     .padding(.horizontal)
-                
-                // Reward message
                 
                 Text(store.rewardMessage)
                     .font(.subheadline)
@@ -43,12 +40,7 @@ struct ScavengerListView: View {
             .padding(.horizontal)
             .background(Color(.systemGray6))
             
-            // Buttons row
-            
             HStack(spacing: 12) {
-                
-                // Submit button
-                
                 Button(action: { showSubmitAlert = true }) {
                     HStack {
                         Image(systemName: "paperplane.fill")
@@ -66,8 +58,6 @@ struct ScavengerListView: View {
                 }
                 .disabled(store.foundCount < 5)
                 
-                // Reset button
-                
                 Button(action: { showResetAlert = true }) {
                     HStack {
                         Image(systemName: "arrow.clockwise")
@@ -83,15 +73,11 @@ struct ScavengerListView: View {
             .padding(.horizontal)
             .padding(.top, 8)
             
-            // Alert for submit
-            
             .alert("Submit Results", isPresented: $showSubmitAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(store.rewardMessage)
             }
-            
-            // Alert for reset
             
             .alert("Reset Game?", isPresented: $showResetAlert) {
                 Button("Cancel", role: .cancel) { }
@@ -101,8 +87,6 @@ struct ScavengerListView: View {
             } message: {
                 Text("All progress and photos will be lost.")
             }
-            
-            // Grid of items
             
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 12) {
@@ -125,8 +109,6 @@ struct ScavengerListView: View {
         }
     }
     
-    // Reset all progress
-    
     func resetGame() {
         for i in 0..<store.items.count {
             store.items[i].isFound = false
@@ -135,54 +117,87 @@ struct ScavengerListView: View {
     }
 }
 
-// Card view for each item in the grid
-
 struct ItemCard: View {
     let item: ScavengerItem
     
     var body: some View {
-        VStack(spacing: 6) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(item.isFound ? Color.mint.opacity(0.25) : Color.gray.opacity(0.12))
-                .aspectRatio(0.9, contentMode: .fit)
-                .overlay(
-                    VStack(spacing: 6) {
-                        
-                        // Status icon
-                        
-                        Image(systemName: item.isFound ? "checkmark.circle.fill" : "circle")
-                            .font(.title3)
-                            .foregroundColor(item.isFound ? .mint : .gray)
-                        
-                        // Item name
-                        
-                        Text(item.name)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .padding(.horizontal, 4)
-                        
-                        // Clue
-                        
-                        Text(item.clue)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .padding(.horizontal, 4)
-                        
-                        // Camera icon if photo taken
-                        
-                        if item.image != nil {
-                            Image(systemName: "camera.fill")
-                                .font(.caption2)
-                                .foregroundColor(.blue)
+        VStack(spacing: 8) {
+            
+            if let image = item.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 160, height: 140)
+                    .cornerRadius(12)
+                    .overlay(
+                        VStack {
+                            HStack {
+                                if item.image != nil {
+                                    Image(systemName: "camera.fill")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                        .padding(6)
+                                        .background(Color.white.clipShape(Circle()))
+                                        .padding(4)
+                                }
+                                Spacer()
+                                if item.isFound {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.green)
+                                        .background(Color.white.clipShape(Circle()))
+                                        .padding(4)
+                                }
+                            }
+                            Spacer()
                         }
-                    }
-                    .padding(8)
-                )
+                    )
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.12))
+                    .frame(width: 160, height: 140)
+                    .overlay(
+                        VStack(spacing: 8) {
+                            Image(systemName: "camera.viewfinder")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                            Text("No photo yet")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    )
+                    .overlay(
+                        VStack {
+                            HStack {
+                                Spacer()
+                                if item.isFound {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.green)
+                                        .background(Color.white.clipShape(Circle()))
+                                        .padding(4)
+                                }
+                            }
+                            Spacer()
+                        }
+                    )
+            }
+            
+            Text(item.name)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .padding(.horizontal, 4)
+            
+            Text(item.clue)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .padding(.horizontal, 4)
         }
+        .frame(width: 170)
     }
 }
 
