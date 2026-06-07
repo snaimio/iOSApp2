@@ -192,3 +192,4 @@ struct ItemCard: View {
             .environmentObject(ScavengerStore())
     }
 }
+

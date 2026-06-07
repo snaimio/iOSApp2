@@ -86,3 +86,4 @@ struct WelcomeView: View {
     WelcomeView()
         .environmentObject(ScavengerStore())
 }
+
